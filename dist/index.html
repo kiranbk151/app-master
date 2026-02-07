@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Indent Management System</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="logo">IMS</div>
+        <div>
+          <h1>Indent Management</h1>
+          <p>Dharwad (CO) • Bangalore (RO)</p>
+        </div>
+      </div>
+      <div class="role-switcher">
+        <label for="role">Login Role</label>
+        <select id="role">
+          <option value="co-cw" selected>CO-CW (Case Worker)</option>
+          <option value="co-ao">CO-AO (Audit Officer)</option>
+          <option value="cao">CAO (Chief Accounts Officer)</option>
+          <option value="ro-cw">RO-CW/AO</option>
+          <option value="gm">GM (General Manager)</option>
+          <option value="md">MD (Managing Director)</option>
+          <option value="master">Master Login</option>
+        </select>
+      </div>
+      <nav class="menu" id="menu"></nav>
+      <div class="sidebar-footer">
+        <button class="ghost">Register Biometrics</button>
+        <button class="primary">Master Controls</button>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h2 id="page-title">Home Dashboard</h2>
+          <p class="muted">Smart tracking of indents, bills, and approvals.</p>
+        </div>
+        <div class="top-actions">
+          <button class="ghost">Notifications</button>
+          <button class="primary">New Request</button>
+        </div>
+      </header>
+
+      <section class="content" id="content">
+        <section class="panel" data-section="home">
+          <div class="cards">
+            <div class="card">
+              <h3>Present Bills</h3>
+              <p class="metric">128</p>
+              <span class="tag info">Updated 1 min ago</span>
+            </div>
+            <div class="card">
+              <h3>Approved Bills</h3>
+              <p class="metric">76</p>
+              <span class="tag success">+12 this week</span>
+            </div>
+            <div class="card">
+              <h3>Rejected Bills</h3>
+              <p class="metric">9</p>
+              <span class="tag danger">-4 this week</span>
+            </div>
+            <div class="card">
+              <h3>Total Bills</h3>
+              <p class="metric">213</p>
+              <span class="tag neutral">FY 2024-25</span>
+            </div>
+          </div>
+
+          <div class="grid">
+            <div class="panel-card">
+              <h3>Approval Flow Overview</h3>
+              <div class="flow">
+                <span>CO-CW</span>
+                <span>CO-AO</span>
+                <span>CAO</span>
+                <span>RO-CW/AO</span>
+                <span>GM</span>
+                <span>MD</span>
+              </div>
+              <p class="muted">Indents move forward on approval and reverse on rejection.</p>
+              <div class="bar-chart">
+                <div>
+                  <span>Pending</span>
+                  <div class="bar pending" style="--value: 72%;"></div>
+                </div>
+                <div>
+                  <span>Approved</span>
+                  <div class="bar approved" style="--value: 58%;"></div>
+                </div>
+                <div>
+                  <span>Rejected</span>
+                  <div class="bar rejected" style="--value: 12%;"></div>
+                </div>
+              </div>
+            </div>
+            <div class="panel-card">
+              <h3>Financial Snapshot</h3>
+              <ul class="list">
+                <li><span>Requested Amount</span><strong>₹ 12.4 Cr</strong></li>
+                <li><span>Approved Amount</span><strong>₹ 8.1 Cr</strong></li>
+                <li><span>Pending Amount</span><strong>₹ 4.3 Cr</strong></li>
+                <li><span>Part Releases</span><strong>18 indents</strong></li>
+              </ul>
+              <div class="notice">
+                <strong>Quick Tip:</strong> Use the report filters for financial year + division-wise insights.
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-section="workcode-new">
+          <h3>New Workcode</h3>
+          <form class="form" id="workcode-form">
+            <div class="form-grid">
+              <div>
+                <label>Workcode No</label>
+                <input type="text" id="workcode-no" readonly />
+              </div>
+              <div>
+                <label>Financial Year</label>
+                <select>
+                  <option>2023-24</option>
+                  <option>2024-25</option>
+                  <option>2025-26</option>
+                </select>
+              </div>
+              <div class="span-2">
+                <label>Name of Work</label>
+                <input type="text" maxlength="200" placeholder="Road widening at NH-48" />
+              </div>
+              <div>
+                <label>Contractor</label>
+                <select>
+                  <option>Shree Constructions</option>
+                  <option>BlueEarth Projects</option>
+                </select>
+              </div>
+              <div>
+                <label>Project</label>
+                <select>
+                  <option>Urban Mobility</option>
+                  <option>Water Works</option>
+                </select>
+              </div>
+              <div>
+                <label>Zone</label>
+                <select>
+                  <option>Zone A</option>
+                  <option>Zone B</option>
+                </select>
+              </div>
+              <div>
+                <label>Circle</label>
+                <select>
+                  <option>Circle 1</option>
+                  <option>Circle 2</option>
+                </select>
+              </div>
+              <div>
+                <label>Division</label>
+                <select>
+                  <option>Division East</option>
+                  <option>Division West</option>
+                </select>
+              </div>
+              <div>
+                <label>Sub Division</label>
+                <select>
+                  <option>Sub Div A</option>
+                  <option>Sub Div B</option>
+                </select>
+              </div>
+              <div>
+                <label>HOA</label>
+                <select>
+                  <option>2054 - Roads</option>
+                  <option>2215 - Water Supply</option>
+                </select>
+              </div>
+              <div>
+                <label>Sub HOA</label>
+                <select>
+                  <option>00-103</option>
+                  <option>00-789</option>
+                </select>
+              </div>
+              <div>
+                <label>Plan Head</label>
+                <select>
+                  <option>Plan Head I</option>
+                  <option>Plan Head II</option>
+                </select>
+              </div>
+              <div>
+                <label>Agreement No</label>
+                <input type="text" maxlength="30" />
+              </div>
+              <div>
+                <label>Agreement Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>Agreement Amount</label>
+                <input type="number" maxlength="10" placeholder="10000000" />
+              </div>
+              <div>
+                <label>MB No</label>
+                <input type="text" maxlength="50" placeholder="MB-101, MB-102" />
+              </div>
+              <div>
+                <label>Type of Indent</label>
+                <select>
+                  <option>Routine</option>
+                  <option>Emergency</option>
+                </select>
+              </div>
+              <div>
+                <label>Constituency</label>
+                <select>
+                  <option>Dharwad Central</option>
+                  <option>Bengaluru North</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary">Submit</button>
+              <button type="reset" class="ghost">Reset</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" data-section="workcode-view">
+          <h3>Workcode List</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Workcode No</th>
+                <th>Name of Work</th>
+                <th>Project</th>
+                <th>Contractor</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>WC-10342</td>
+                <td>Drainage upgrade phase II</td>
+                <td>Urban Mobility</td>
+                <td>Shree Constructions</td>
+                <td><span class="status success">Active</span></td>
+                <td><button class="ghost small">Edit</button></td>
+              </tr>
+              <tr>
+                <td>WC-10343</td>
+                <td>Bridge rehabilitation</td>
+                <td>Water Works</td>
+                <td>BlueEarth Projects</td>
+                <td><span class="status warning">Pending</span></td>
+                <td><button class="ghost small">Edit</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel" data-section="cbr-new">
+          <h3>New CBR Entry</h3>
+          <div class="search-card">
+            <label>Search Workcode</label>
+            <input type="text" placeholder="Start typing workcode..." />
+            <div class="info-grid">
+              <div><span>Name of Work</span><strong>Road widening at NH-48</strong></div>
+              <div><span>Agency</span><strong>Shree Constructions</strong></div>
+              <div><span>Project</span><strong>Urban Mobility</strong></div>
+              <div><span>Zone</span><strong>Zone A</strong></div>
+              <div><span>Circle</span><strong>Circle 1</strong></div>
+              <div><span>Division</span><strong>Division East</strong></div>
+              <div><span>Sub Division</span><strong>Sub Div A</strong></div>
+              <div><span>HOA</span><strong>2054 - Roads</strong></div>
+              <div><span>Sub HOA</span><strong>00-103</strong></div>
+              <div><span>Plan Head</span><strong>Plan Head I</strong></div>
+              <div><span>Indent Type</span><strong>Routine</strong></div>
+            </div>
+          </div>
+          <form class="form" id="cbr-form">
+            <div class="form-grid">
+              <div>
+                <label>Financial Year</label>
+                <select>
+                  <option>2023-24</option>
+                  <option>2024-25</option>
+                </select>
+              </div>
+              <div>
+                <label>CE/SE/EE Letter No</label>
+                <input type="text" maxlength="30" />
+              </div>
+              <div>
+                <label>CE/SE/EE Letter Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>SBR No</label>
+                <input type="text" maxlength="8" />
+              </div>
+              <div>
+                <label>SBR Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>DBR No</label>
+                <input type="text" maxlength="8" />
+              </div>
+              <div>
+                <label>DBR Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>CBR No</label>
+                <input type="text" id="cbr-no" readonly />
+              </div>
+              <div>
+                <label>CBR Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>RA Bill No</label>
+                <select>
+                  <option>RB-101</option>
+                  <option>RB-102</option>
+                </select>
+              </div>
+              <div>
+                <label>RA Bill Amount</label>
+                <input type="number" placeholder="0.00" />
+                <small class="muted">Amount in words: Ten lakh only</small>
+              </div>
+              <div>
+                <label>RA Bill Amount (in Lakhs)</label>
+                <input type="text" value="10.00" readonly />
+              </div>
+            </div>
+
+            <div class="dual-table">
+              <div>
+                <h4>Statutory Deductions</h4>
+                <div class="form-grid compact">
+                  <div><label>Income Tax</label><input type="number" /></div>
+                  <div><label>VAT</label><input type="number" /></div>
+                  <div><label>CGST</label><input type="number" /></div>
+                  <div><label>SGST</label><input type="number" /></div>
+                  <div><label>IGST</label><input type="number" /></div>
+                  <div><label>CGST on fine/Scrap</label><input type="number" /></div>
+                  <div><label>SGST on fine/Scrap</label><input type="number" /></div>
+                  <div><label>Royalty</label><input type="number" /></div>
+                  <div><label>CBF</label><input type="number" /></div>
+                  <div><label>Rubble</label><input type="number" /></div>
+                  <div><label>CGST on Rubble</label><input type="number" /></div>
+                  <div><label>SGST on Rubble</label><input type="number" /></div>
+                  <div><label>Cess</label><input type="number" /></div>
+                  <div class="span-2"><label>Total Statutory Deductions</label><input type="number" readonly /></div>
+                </div>
+              </div>
+              <div>
+                <h4>Nigam Adjustments</h4>
+                <div class="form-grid compact">
+                  <div><label>IBS</label><input type="number" /></div>
+                  <div><label>FSD</label><input type="number" /></div>
+                  <div><label>APS</label><input type="number" /></div>
+                  <div><label>Penalty</label><input type="number" /></div>
+                  <div><label>Misc Deposit</label><input type="number" /></div>
+                  <div><label>Additional EMD</label><input type="number" /></div>
+                  <div><label>Mob.Adv Adjustments</label><input type="number" /></div>
+                  <div><label>Int on Mob.Adv Adj.</label><input type="number" /></div>
+                  <div><label>Stamp Duty</label><input type="number" /></div>
+                  <div><label>Other Nigam Charges</label><input type="number" /></div>
+                  <div><label>MPWA Adjustments</label><input type="number" /></div>
+                  <div class="span-2"><label>Total Nigam Adjustments</label><input type="number" readonly /></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-grid">
+              <div>
+                <label>CHEQUE Amount</label>
+                <input type="number" readonly placeholder="Auto-calculated" />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary">Submit</button>
+              <button type="reset" class="ghost">Reset</button>
+            </div>
+          </form>
+        </section>
+
+        <section class="panel" data-section="cbr-view">
+          <h3>CBR List</h3>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>CBR No</th>
+                <th>Workcode</th>
+                <th>RA Bill Amount</th>
+                <th>Status</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>CBR-2401</td>
+                <td>WC-10342</td>
+                <td>₹ 10,00,000</td>
+                <td><span class="status info">Pending AO</span></td>
+                <td><button class="ghost small">Edit</button></td>
+              </tr>
+              <tr>
+                <td>CBR-2402</td>
+                <td>WC-10343</td>
+                <td>₹ 8,50,000</td>
+                <td><span class="status success">Approved</span></td>
+                <td><button class="ghost small">View</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel" data-section="indent-generate">
+          <h3>Generate Indent</h3>
+          <form class="form" id="indent-form">
+            <div class="form-grid">
+              <div>
+                <label>From Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>To Date</label>
+                <input type="date" />
+              </div>
+              <div class="span-2">
+                <label>Indent Type</label>
+                <div class="checkbox-group">
+                  <label><input type="checkbox" checked /> Routine</label>
+                  <label><input type="checkbox" /> Emergency</label>
+                  <label><input type="checkbox" /> Special Grant</label>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="primary">Generate Indent</button>
+              <button type="button" class="ghost">Send to CO-AO</button>
+            </div>
+          </form>
+          <div class="table-actions">
+            <button class="ghost">Download Excel</button>
+            <button class="ghost">Download PDF</button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Indent No</th>
+                <th>Date</th>
+                <th>Zone</th>
+                <th>Division</th>
+                <th>Status</th>
+                <th>Send</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>IND-9001</td>
+                <td>12 Aug 2024</td>
+                <td>Zone A</td>
+                <td>Division East</td>
+                <td><span class="status info">Draft</span></td>
+                <td><button class="primary small">Send</button></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel" data-section="indent-view">
+          <h3>Indent Register</h3>
+          <div class="table-actions">
+            <button class="ghost">Download Excel</button>
+            <button class="ghost">Download PDF</button>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Sl No</th>
+                <th>Indent No</th>
+                <th>Indent Date</th>
+                <th>Zone</th>
+                <th>Division</th>
+                <th>Sub Division</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="row-approved">
+                <td>1</td>
+                <td>IND-8801</td>
+                <td>03 Jul 2024</td>
+                <td>Zone A</td>
+                <td>Division East</td>
+                <td>Sub Div A</td>
+                <td>Approved by MD</td>
+              </tr>
+              <tr class="row-pending">
+                <td>2</td>
+                <td>IND-8802</td>
+                <td>10 Jul 2024</td>
+                <td>Zone B</td>
+                <td>Division West</td>
+                <td>Sub Div B</td>
+                <td>At CO-AO</td>
+              </tr>
+              <tr class="row-rejected">
+                <td>3</td>
+                <td>IND-8803</td>
+                <td>15 Jul 2024</td>
+                <td>Zone A</td>
+                <td>Division South</td>
+                <td>Sub Div C</td>
+                <td>Rejected</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section class="panel" data-section="masters">
+          <h3>Masters</h3>
+          <div class="grid">
+            <div class="panel-card">
+              <h4>Project Master</h4>
+              <ul class="list compact">
+                <li><span>project_id</span><strong>Unique ID</strong></li>
+                <li><span>project name</span><strong>150 chars</strong></li>
+                <li><span>deleted</span><strong>0/1</strong></li>
+              </ul>
+            </div>
+            <div class="panel-card">
+              <h4>Zone / Circle / Division</h4>
+              <p class="muted">Hierarchical masters linked by zone_id and circle_id.</p>
+              <ul class="list compact">
+                <li><span>Zone</span><strong>zone_id, zone name</strong></li>
+                <li><span>Circle</span><strong>circle_id, zone_id</strong></li>
+                <li><span>Division</span><strong>division_id, circle_id</strong></li>
+                <li><span>Sub Division</span><strong>subdivision_id, division_id</strong></li>
+              </ul>
+            </div>
+            <div class="panel-card">
+              <h4>Financial Masters</h4>
+              <ul class="list compact">
+                <li><span>HOA</span><strong>HOA_id, HOA name</strong></li>
+                <li><span>Sub HOA</span><strong>subhoa_id, HOA_id</strong></li>
+                <li><span>RA Bill</span><strong>rabill_id, rabill name</strong></li>
+                <li><span>Indent Type</span><strong>indentype_id, i_type</strong></li>
+              </ul>
+            </div>
+            <div class="panel-card">
+              <h4>Constituency & Contractor</h4>
+              <ul class="list compact">
+                <li><span>Constituency</span><strong>district id allowed duplicate</strong></li>
+                <li><span>Contractor</span><strong>PAN, GST, Mobile, Email</strong></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-section="adjustments">
+          <h3>Adjusted CBR & Payments</h3>
+          <p class="muted">Approved indents from MD with released amount tracking.</p>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Indent No</th>
+                <th>Indent Date</th>
+                <th>Zone</th>
+                <th>Division</th>
+                <th>Sub Division</th>
+                <th>Released Amount</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>IND-8801</td>
+                <td>03 Jul 2024</td>
+                <td>Zone A</td>
+                <td>Division East</td>
+                <td>Sub Div A</td>
+                <td>₹ 12,00,000</td>
+                <td>
+                  <button class="ghost small">Adjust</button>
+                  <button class="primary small">Pay</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="panel-card">
+            <h4>Adjustment Entry</h4>
+            <div class="form-grid">
+              <div>
+                <label>Search CBR</label>
+                <input type="text" placeholder="CBR no..." />
+              </div>
+              <div>
+                <label>GST Invoice No</label>
+                <input type="text" />
+              </div>
+              <div>
+                <label>GST Invoice Date</label>
+                <input type="date" />
+              </div>
+              <div>
+                <label>Total Value Incl GST</label>
+                <input type="number" />
+              </div>
+              <div>
+                <label>Taxable Value</label>
+                <input type="number" readonly />
+              </div>
+              <div>
+                <label>Amount to be Adjusted</label>
+                <input type="number" />
+              </div>
+              <div>
+                <label>Balance Amount</label>
+                <input type="number" readonly />
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="primary">Adjust CBR</button>
+              <button class="ghost">Reset</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-section="reports">
+          <h3>Reports</h3>
+          <div class="grid">
+            <div class="panel-card">
+              <h4>Filters</h4>
+              <div class="form-grid">
+                <div><label>Financial Year</label><select><option>2024-25</option></select></div>
+                <div><label>Division</label><select><option>Division East</option></select></div>
+                <div><label>Account Head</label><select><option>2054 - Roads</option></select></div>
+                <div><label>Agency</label><select><option>Shree Constructions</option></select></div>
+                <div><label>Finance Slab</label><select><option>0 - 50L</option></select></div>
+                <div><label>User</label><select><option>CO-CW</option></select></div>
+              </div>
+              <button class="primary">Generate Report</button>
+            </div>
+            <div class="panel-card">
+              <h4>Report Output</h4>
+              <p class="muted">Financial year-wise, division-wise, account head-wise, agency-wise, finance slab-wise, and pendency stats.</p>
+              <button class="ghost">Download Excel</button>
+              <button class="ghost">Download PDF</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel" data-section="support">
+          <h3>Support</h3>
+          <div class="grid">
+            <div class="panel-card">
+              <h4>User Manuals</h4>
+              <p class="muted">Upload manuals and policies through the admin panel.</p>
+              <button class="ghost">Upload Manual</button>
+            </div>
+            <div class="panel-card">
+              <h4>Operations Videos</h4>
+              <p class="muted">Host onboarding and operations videos for all roles.</p>
+              <button class="ghost">Upload Video</button>
+            </div>
+          </div>
+        </section>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" id="toast">New workcode has been created.</div>
+
+  <script src="app.js"></script>
+</body>
+</html>
