@@ -2,7 +2,7 @@
   "name": "indent-management-system",
   "version": "1.0.0",
   "private": true,
-  "description": "Static UI preview server for Indent Management System",
+  "description": "Indent Management System with API and file database",
   "scripts": {
     "start": "node server.js"
   }

@@ -140,7 +140,7 @@
               </div>
               <div>
                 <label>Financial Year</label>
-                <select>
+                <select id="wc-fin-year">
                   <option>2023-24</option>
                   <option>2024-25</option>
                   <option>2025-26</option>
@@ -148,18 +148,18 @@
               </div>
               <div class="span-2">
                 <label>Name of Work</label>
-                <input type="text" maxlength="200" placeholder="Road widening at NH-48" />
+                <input type="text" id="wc-name-work" maxlength="200" placeholder="Road widening at NH-48" />
               </div>
               <div>
                 <label>Contractor</label>
-                <select>
+                <select id="wc-contractor">
                   <option>Shree Constructions</option>
                   <option>BlueEarth Projects</option>
                 </select>
               </div>
               <div>
                 <label>Project</label>
-                <select>
+                <select id="wc-project">
                   <option>Urban Mobility</option>
                   <option>Water Works</option>
                 </select>
@@ -264,7 +264,7 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="workcode-list-body">
               <tr>
                 <td>WC-10342</td>
                 <td>Drainage upgrade phase II</td>
@@ -299,7 +299,7 @@
           </div>
           <div class="search-card">
             <label>Search Workcode</label>
-            <input type="text" placeholder="Start typing workcode..." />
+            <input type="text" id="cbr-workcode-search" placeholder="Start typing workcode..." />
             <div class="info-grid">
               <div><span>Name of Work</span><strong>Road widening at NH-48</strong></div>
               <div><span>Agency</span><strong>Shree Constructions</strong></div>
@@ -357,7 +357,7 @@
               </div>
               <div>
                 <label>RA Bill No</label>
-                <select>
+                <select id="cbr-ra-bill-no">
                   <option>RB-101</option>
                   <option>RB-102</option>
                 </select>
@@ -453,7 +453,7 @@
                 <th></th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="cbr-list-body">
               <tr>
                 <td>CBR-2401</td>
                 <td>WC-10342</td>

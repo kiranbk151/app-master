@@ -111,6 +111,17 @@ const showToast = (message) => {
   setTimeout(() => toast.classList.remove("show"), 2400);
 };
 
+const api = async (url, options = {}) => {
+  const response = await fetch(url, {
+    headers: { "Content-Type": "application/json" },
+    ...options,
+  });
+  if (!response.ok) {
+    throw new Error(await response.text());
+  }
+  return response.json();
+};
+
 const setActiveSection = (sectionId, label) => {
   panels.forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.section === sectionId);
@@ -149,9 +160,7 @@ const renderMenu = (role) => {
         setActiveButton(button);
       });
       menu.appendChild(button);
-      if (index === 0) {
-        setActiveButton(button);
-      }
+      if (index === 0) setActiveButton(button);
     }
   });
 };
@@ -213,23 +222,99 @@ const updateCbrCalculations = () => {
   if (raWords) raWords.textContent = `Amount in words: ${numberToWords(ra)}`;
 };
 
+const renderWorkcodeList = (rows) => {
+  const body = document.getElementById("workcode-list-body");
+  if (!body) return;
+  body.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${row.workcode_no}</td>
+      <td>${row.name_of_work}</td>
+      <td>${row.project}</td>
+      <td>${row.contractor}</td>
+      <td><span class="status success">Saved</span></td>
+      <td><button class="ghost small">Edit</button></td>
+    </tr>`).join("");
+};
+
+const renderCbrList = (rows) => {
+  const body = document.getElementById("cbr-list-body");
+  if (!body) return;
+  body.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${row.cbr_no}</td>
+      <td>${row.workcode_no}</td>
+      <td>₹ ${Number(row.ra_bill_amount || 0).toLocaleString('en-IN', {minimumFractionDigits:2})}</td>
+      <td><span class="status info">${row.status || 'Pending AO'}</span></td>
+      <td><button class="ghost small">View</button></td>
+    </tr>`).join("");
+};
+
+const loadData = async () => {
+  try {
+    const workcodes = await api('/api/workcodes');
+    renderWorkcodeList(workcodes);
+  } catch (error) {
+    showToast('Workcode API unavailable');
+  }
+
+  try {
+    const cbrs = await api('/api/cbrs');
+    renderCbrList(cbrs);
+  } catch (error) {
+    showToast('CBR API unavailable');
+  }
+};
+
 roleSelect.addEventListener("change", (event) => {
   renderMenu(event.target.value);
   setActiveSection("home", "Home Dashboard");
 });
 
 const workcodeForm = document.getElementById("workcode-form");
-workcodeForm.addEventListener("submit", (event) => {
+workcodeForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  showToast(`New workcode has been created. ${workcodeNo.value}`);
-  generateWorkcode();
+  const payload = {
+    workcode_no: workcodeNo.value,
+    financial_year: document.getElementById('wc-fin-year')?.value,
+    name_of_work: document.getElementById('wc-name-work')?.value || '',
+    contractor: document.getElementById('wc-contractor')?.value || '',
+    project: document.getElementById('wc-project')?.value || ''
+  };
+  try {
+    const saved = await api('/api/workcodes', { method: 'POST', body: JSON.stringify(payload) });
+    showToast(`New workcode has been created. ${saved.workcode_no}`);
+    generateWorkcode();
+    await loadData();
+    workcodeForm.reset();
+    generateWorkcode();
+  } catch (error) {
+    showToast('Failed to save workcode');
+  }
 });
 
 const cbrForm = document.getElementById("cbr-form");
-cbrForm.addEventListener("submit", (event) => {
+cbrForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  showToast(`New CBR No has been created. ${cbrNo.value}`);
-  generateCbrNo();
+  const payload = {
+    cbr_no: cbrNo.value,
+    workcode_no: document.getElementById('cbr-workcode-search')?.value || '',
+    ra_bill_no: document.getElementById('cbr-ra-bill-no')?.value || '',
+    ra_bill_amount: parseFloat(raBillAmount?.value) || 0,
+    total_stat: parseFloat(totalStat?.value) || 0,
+    total_nigam: parseFloat(totalNigam?.value) || 0,
+    cheque_amount: parseFloat(chequeAmount?.value) || 0
+  };
+
+  try {
+    const saved = await api('/api/cbrs', { method: 'POST', body: JSON.stringify(payload) });
+    showToast(`New CBR No has been created. ${saved.cbr_no}`);
+    cbrForm.reset();
+    generateCbrNo();
+    updateCbrCalculations();
+    await loadData();
+  } catch (error) {
+    showToast('Failed to save CBR');
+  }
 });
 
 if (raBillAmount) {
@@ -250,3 +335,4 @@ setActiveSection("home", "Home Dashboard");
 generateWorkcode();
 generateCbrNo();
 updateCbrCalculations();
+loadData();

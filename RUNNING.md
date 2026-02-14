@@ -29,3 +29,15 @@ python -m http.server 8000 --directory public
 ```
 
 Then open `http://localhost:8000`.
+
+## API and database
+
+When the server starts, it exposes API endpoints:
+
+- `GET /api/health`
+- `GET /api/workcodes`
+- `POST /api/workcodes`
+- `GET /api/cbrs`
+- `POST /api/cbrs`
+
+Data is persisted in a local file database at `ims-db.json` in the project root.
