@@ -1,29 +1,31 @@
 # Running the Indent Management System UI
 
-This project is a static single-page UI. You can run it locally using a simple
-static file server or by opening the HTML directly in a browser.
+This project is a static single-page UI. The easiest way is to use the built-in
+preview server so platforms and local machines run the same way.
 
-## Option A: Static server (recommended)
+## Recommended (works with preview platforms)
 
 From the repository root, run:
+
+```bash
+npm start
+```
+
+This starts `server.js` on port `3000` by default (or `PORT` if provided).
+
+Then open:
+
+- `http://localhost:3000`
+
+The server automatically serves files from `public/` first, then `dist/`, then
+project root.
+
+## Alternative: Python static server
+
+If you prefer Python:
 
 ```bash
 python -m http.server 8000 --directory public
 ```
 
-Then open `http://localhost:8000` in your browser.
-
-## Option B: Use the dist/ folder
-
-If your environment expects a `dist/` output folder, run:
-
-```bash
-python -m http.server 8000 --directory dist
-```
-
-Then open `http://localhost:8000` in your browser.
-
-## Option C: Open the file directly
-
-Open `public/index.html` (or `index.html`) in your browser. This works for a
-quick preview but some browsers may restrict local file access for scripts.
+Then open `http://localhost:8000`.

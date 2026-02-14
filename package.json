@@ -1,0 +1,9 @@
+{
+  "name": "indent-management-system",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Static UI preview server for Indent Management System",
+  "scripts": {
+    "start": "node server.js"
+  }
+}
