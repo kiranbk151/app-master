@@ -31,10 +31,12 @@ const defaultDb = {
   seq: { workcode: 10000, cbr: 1 },
   workcodes: [],
   cbrs: [],
-  indents: []
+  indents: [],
+  adjustments: []
 };
 
 const approvalFlow = ['COCW', 'COAO', 'CAO', 'ROCW', 'GM', 'MD'];
+const adjustmentFlow = ['COCW', 'COAO', 'CAO'];
 
 function readDb() {
   if (!fs.existsSync(dbFile)) {
@@ -193,6 +195,58 @@ const server = http.createServer(async (req, res) => {
         target.current_role = approvalFlow[prevIdx];
         target.status = `Rejected to ${target.current_role}`;
       }
+      target.history.push({ action, role, at: new Date().toISOString() });
+      writeDb(db);
+      return sendJson(res, 200, target);
+    }
+
+    if (req.url === '/api/adjustments' && req.method === 'GET') {
+      const db = readDb();
+      return sendJson(res, 200, db.adjustments);
+    }
+
+    if (req.url === '/api/adjustments' && req.method === 'POST') {
+      const payload = await parseBody(req);
+      if (!payload.cbr_no) return sendJson(res, 400, { error: 'cbr_no is required' });
+      const db = readDb();
+      const row = {
+        id: Date.now(),
+        cbr_no: payload.cbr_no,
+        amount_to_adjust: Number(payload.amount_to_adjust || 0),
+        balance_amount: Number(payload.balance_amount || 0),
+        stage_index: 0,
+        current_role: adjustmentFlow[0],
+        status: 'At COCW',
+        history: [{ action: 'created', role: 'COCW', at: new Date().toISOString() }]
+      };
+      db.adjustments.unshift(row);
+      writeDb(db);
+      return sendJson(res, 201, row);
+    }
+
+    if (req.url === '/api/adjustments/action' && req.method === 'POST') {
+      const payload = await parseBody(req);
+      const db = readDb();
+      const target = db.adjustments.find((a) => a.cbr_no === payload.cbr_no);
+      if (!target) return sendJson(res, 404, { error: 'adjustment not found' });
+
+      const action = payload.action === 'reject' ? 'reject' : 'approve';
+      const role = payload.current_role || target.current_role;
+      const idx = adjustmentFlow.indexOf(role);
+      if (idx === -1) return sendJson(res, 400, { error: 'invalid role' });
+
+      if (action === 'approve') {
+        const nextIdx = Math.min(idx + 1, adjustmentFlow.length - 1);
+        target.stage_index = nextIdx;
+        target.current_role = adjustmentFlow[nextIdx];
+        target.status = nextIdx === adjustmentFlow.length - 1 ? 'Final Approved by CAO' : `At ${target.current_role}`;
+      } else {
+        const prevIdx = Math.max(idx - 1, 0);
+        target.stage_index = prevIdx;
+        target.current_role = adjustmentFlow[prevIdx];
+        target.status = `Rejected to ${target.current_role}`;
+      }
+
       target.history.push({ action, role, at: new Date().toISOString() });
       writeDb(db);
       return sendJson(res, 200, target);

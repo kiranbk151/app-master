@@ -42,5 +42,8 @@ When the server starts, it exposes API endpoints:
 - `GET /api/indents`
 - `POST /api/indents`
 - `POST /api/indents/action`
+- `GET /api/adjustments`
+- `POST /api/adjustments`
+- `POST /api/adjustments/action`
 
 Data is persisted in a local file database at `ims-db.json` in the project root.

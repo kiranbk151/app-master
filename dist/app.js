@@ -106,6 +106,7 @@ const totalNigam = document.getElementById("total-nigam");
 const chequeAmount = document.getElementById("cheque-amount");
 const indentGenerateBody = document.getElementById("indent-generate-body");
 const indentViewBody = document.getElementById("indent-view-body");
+const adjustmentListBody = document.getElementById("adjustment-list-body");
 
 const showToast = (message) => {
   toast.textContent = message;
@@ -272,6 +273,13 @@ const loadData = async () => {
   } catch (error) {
     showToast('Indent API unavailable');
   }
+
+  try {
+    const adjustments = await api('/api/adjustments');
+    renderAdjustmentTable(adjustments);
+  } catch (error) {
+    showToast('Adjustment API unavailable');
+  }
 };
 
 const rowClassByStatus = (status = '') => {
@@ -288,6 +296,22 @@ const renderIndentTables = (rows) => {
   if (indentViewBody) {
     indentViewBody.innerHTML = rows.map((row, idx) => `\n      <tr class="${rowClassByStatus(row.status)}">\n        <td>${idx + 1}</td>\n        <td>${row.indent_no}</td>\n        <td>${row.indent_date}</td>\n        <td>${row.zone}</td>\n        <td>${row.division}</td>\n        <td>${row.subdivision}</td>\n        <td>${row.status}</td>\n      </tr>`).join('');
   }
+};
+
+const renderAdjustmentTable = (rows) => {
+  if (!adjustmentListBody) return;
+  adjustmentListBody.innerHTML = rows.map((row) => `
+    <tr>
+      <td>${row.cbr_no}</td>
+      <td>${new Date().toLocaleDateString('en-GB')}</td>
+      <td>Zone A</td>
+      <td>Division East</td>
+      <td>Sub Div A</td>
+      <td>₹ ${Number(row.amount_to_adjust || 0).toLocaleString('en-IN')}</td>
+      <td>
+        <span class="status info">${row.status}</span>
+      </td>
+    </tr>`).join('');
 };
 
 roleSelect.addEventListener("change", (event) => {
@@ -392,6 +416,48 @@ if (actionBtn) {
       await loadData();
     } catch (error) {
       showToast('Indent action failed');
+    }
+  });
+}
+
+
+const createAdjustmentBtn = document.getElementById('create-adjustment-btn');
+if (createAdjustmentBtn) {
+  createAdjustmentBtn.addEventListener('click', async (event) => {
+    event.preventDefault();
+    const cbrNoVal = document.getElementById('adjust-cbr-no')?.value;
+    const amount = parseFloat(document.getElementById('adjust-amount')?.value || '0');
+    const balance = parseFloat(document.getElementById('adjust-balance')?.value || '0');
+    if (!cbrNoVal) return showToast('Enter CBR no');
+    try {
+      await api('/api/adjustments', {
+        method: 'POST',
+        body: JSON.stringify({ cbr_no: cbrNoVal, amount_to_adjust: amount, balance_amount: balance })
+      });
+      showToast('Adjustment sent to COAO');
+      await loadData();
+    } catch (error) {
+      showToast('Failed to create adjustment');
+    }
+  });
+}
+
+const adjustActionBtn = document.getElementById('adjust-action-btn');
+if (adjustActionBtn) {
+  adjustActionBtn.addEventListener('click', async () => {
+    const cbrNoVal = document.getElementById('adjust-action-cbr')?.value;
+    const role = document.getElementById('adjust-action-role')?.value;
+    const action = document.getElementById('adjust-action-type')?.value;
+    if (!cbrNoVal) return showToast('Enter CBR no');
+    try {
+      const updated = await api('/api/adjustments/action', {
+        method: 'POST',
+        body: JSON.stringify({ cbr_no: cbrNoVal, current_role: role, action })
+      });
+      showToast(updated.status);
+      await loadData();
+    } catch (error) {
+      showToast('Adjustment action failed');
     }
   });
 }

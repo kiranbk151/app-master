@@ -650,7 +650,7 @@
 
         <section class="panel" data-section="adjustments">
           <h3>Adjusted CBR & Payments</h3>
-          <p class="muted">Approved indents from MD with released amount tracking.</p>
+          <p class="muted">Adjustment approval flow: <strong>COCW → COAO → CAO (Final Approval)</strong>.</p>
           <table class="table">
             <thead>
               <tr>
@@ -663,7 +663,7 @@
                 <th>Actions</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="adjustment-list-body">
               <tr>
                 <td>IND-8801</td>
                 <td>03 Jul 2024</td>
@@ -683,7 +683,7 @@
             <div class="form-grid">
               <div>
                 <label>Search CBR</label>
-                <input type="text" placeholder="CBR no..." />
+                <input type="text" id="adjust-cbr-no" placeholder="CBR no..." />
               </div>
               <div>
                 <label>GST Invoice No</label>
@@ -703,19 +703,47 @@
               </div>
               <div>
                 <label>Amount to be Adjusted</label>
-                <input type="number" />
+                <input type="number" id="adjust-amount" />
               </div>
               <div>
                 <label>Balance Amount</label>
-                <input type="number" readonly />
+                <input type="number" id="adjust-balance" readonly />
               </div>
             </div>
             <div class="form-actions">
-              <button class="primary">Adjust CBR</button>
+              <button class="primary" id="create-adjustment-btn">Adjust CBR</button>
               <button class="ghost">Reset</button>
             </div>
           </div>
-        </section>
+        
+          <div class="panel-card" style="margin-top: 14px;">
+            <h4>Adjustment Approval Action</h4>
+            <div class="form-grid">
+              <div>
+                <label>CBR No</label>
+                <input id="adjust-action-cbr" type="text" placeholder="CBR-2602-01" />
+              </div>
+              <div>
+                <label>Current Role</label>
+                <select id="adjust-action-role">
+                  <option>COCW</option>
+                  <option>COAO</option>
+                  <option>CAO</option>
+                </select>
+              </div>
+              <div>
+                <label>Action</label>
+                <select id="adjust-action-type">
+                  <option value="approve">Approve</option>
+                  <option value="reject">Reject</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top:10px;">
+              <button class="primary" id="adjust-action-btn" type="button">Apply Adjustment Action</button>
+            </div>
+          </div>
+</section>
 
         <section class="panel" data-section="reports">
           <h3>Reports</h3>
