@@ -30,8 +30,11 @@ const mimeTypes = {
 const defaultDb = {
   seq: { workcode: 10000, cbr: 1 },
   workcodes: [],
-  cbrs: []
+  cbrs: [],
+  indents: []
 };
+
+const approvalFlow = ['COCW', 'COAO', 'CAO', 'ROCW', 'GM', 'MD'];
 
 function readDb() {
   if (!fs.existsSync(dbFile)) {
@@ -140,6 +143,59 @@ const server = http.createServer(async (req, res) => {
       db.cbrs.unshift(row);
       writeDb(db);
       return sendJson(res, 201, row);
+    }
+
+    if (req.url === '/api/indents' && req.method === 'GET') {
+      const db = readDb();
+      return sendJson(res, 200, db.indents);
+    }
+
+    if (req.url === '/api/indents' && req.method === 'POST') {
+      const payload = await parseBody(req);
+      const db = readDb();
+      const indentNo = payload.indent_no || `IND-${String(9000 + db.indents.length + 1)}`;
+      const row = {
+        id: Date.now(),
+        indent_no: indentNo,
+        indent_date: payload.indent_date || new Date().toISOString().slice(0, 10),
+        zone: payload.zone || 'Zone A',
+        division: payload.division || 'Division East',
+        subdivision: payload.subdivision || 'Sub Div A',
+        stage_index: 0,
+        current_role: approvalFlow[0],
+        status: 'At COCW',
+        history: [{ action: 'generated', role: 'COCW', at: new Date().toISOString() }]
+      };
+      db.indents.unshift(row);
+      writeDb(db);
+      return sendJson(res, 201, row);
+    }
+
+    if (req.url === '/api/indents/action' && req.method === 'POST') {
+      const payload = await parseBody(req);
+      const db = readDb();
+      const target = db.indents.find((i) => i.indent_no === payload.indent_no);
+      if (!target) return sendJson(res, 404, { error: 'indent not found' });
+
+      const action = payload.action === 'reject' ? 'reject' : 'approve';
+      const role = payload.current_role || target.current_role;
+      const idx = approvalFlow.indexOf(role);
+      if (idx === -1) return sendJson(res, 400, { error: 'invalid role' });
+
+      if (action === 'approve') {
+        const nextIdx = Math.min(idx + 1, approvalFlow.length - 1);
+        target.stage_index = nextIdx;
+        target.current_role = approvalFlow[nextIdx];
+        target.status = nextIdx === approvalFlow.length - 1 ? 'Approved by MD' : `At ${target.current_role}`;
+      } else {
+        const prevIdx = Math.max(idx - 1, 0);
+        target.stage_index = prevIdx;
+        target.current_role = approvalFlow[prevIdx];
+        target.status = `Rejected to ${target.current_role}`;
+      }
+      target.history.push({ action, role, at: new Date().toISOString() });
+      writeDb(db);
+      return sendJson(res, 200, target);
     }
 
     const reqPath = req.url === '/' ? '/index.html' : req.url;

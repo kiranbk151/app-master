@@ -104,6 +104,8 @@ const raWords = document.getElementById("ra-words");
 const totalStat = document.getElementById("total-stat");
 const totalNigam = document.getElementById("total-nigam");
 const chequeAmount = document.getElementById("cheque-amount");
+const indentGenerateBody = document.getElementById("indent-generate-body");
+const indentViewBody = document.getElementById("indent-view-body");
 
 const showToast = (message) => {
   toast.textContent = message;
@@ -263,6 +265,29 @@ const loadData = async () => {
   } catch (error) {
     showToast('CBR API unavailable');
   }
+
+  try {
+    const indents = await api('/api/indents');
+    renderIndentTables(indents);
+  } catch (error) {
+    showToast('Indent API unavailable');
+  }
+};
+
+const rowClassByStatus = (status = '') => {
+  if (status.includes('Approved')) return 'row-approved';
+  if (status.includes('Rejected')) return 'row-rejected';
+  return 'row-pending';
+};
+
+const renderIndentTables = (rows) => {
+  if (indentGenerateBody) {
+    indentGenerateBody.innerHTML = rows.map((row) => `\n      <tr>\n        <td>${row.indent_no}</td>\n        <td>${row.indent_date}</td>\n        <td>${row.zone}</td>\n        <td>${row.division}</td>\n        <td><span class="status info">${row.status}</span></td>\n        <td><button class="primary small send-indent-row" data-id="${row.indent_no}">Send</button></td>\n      </tr>`).join('');
+  }
+
+  if (indentViewBody) {
+    indentViewBody.innerHTML = rows.map((row, idx) => `\n      <tr class="${rowClassByStatus(row.status)}">\n        <td>${idx + 1}</td>\n        <td>${row.indent_no}</td>\n        <td>${row.indent_date}</td>\n        <td>${row.zone}</td>\n        <td>${row.division}</td>\n        <td>${row.subdivision}</td>\n        <td>${row.status}</td>\n      </tr>`).join('');
+  }
 };
 
 roleSelect.addEventListener("change", (event) => {
@@ -325,10 +350,51 @@ if (raBillAmount) {
 }
 
 const indentForm = document.getElementById("indent-form");
-indentForm.addEventListener("submit", (event) => {
+indentForm.addEventListener("submit", async (event) => {
   event.preventDefault();
-  showToast("Indents generated successfully.");
+  try {
+    const created = await api('/api/indents', { method: 'POST', body: JSON.stringify({}) });
+    showToast(`Indent generated: ${created.indent_no}`);
+    await loadData();
+  } catch (error) {
+    showToast('Failed to generate indent');
+  }
 });
+
+const sendIndentBtn = document.getElementById('send-indent-btn');
+if (sendIndentBtn) {
+  sendIndentBtn.addEventListener('click', async () => {
+    const indents = await api('/api/indents');
+    if (!indents.length) return showToast('No indent to send');
+    const indent = indents[0];
+    await api('/api/indents/action', {
+      method: 'POST',
+      body: JSON.stringify({ indent_no: indent.indent_no, current_role: indent.current_role, action: 'approve' })
+    });
+    showToast('Sent to next level in flow');
+    await loadData();
+  });
+}
+
+const actionBtn = document.getElementById('indent-action-btn');
+if (actionBtn) {
+  actionBtn.addEventListener('click', async () => {
+    const indentNo = document.getElementById('indent-action-no')?.value;
+    const role = document.getElementById('indent-action-role')?.value;
+    const action = document.getElementById('indent-action-type')?.value;
+    if (!indentNo) return showToast('Enter indent no');
+    try {
+      const res = await api('/api/indents/action', {
+        method: 'POST',
+        body: JSON.stringify({ indent_no: indentNo, current_role: role, action })
+      });
+      showToast(`Updated: ${res.status}`);
+      await loadData();
+    } catch (error) {
+      showToast('Indent action failed');
+    }
+  });
+}
 
 renderMenu(roleSelect.value);
 setActiveSection("home", "Home Dashboard");

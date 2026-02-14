@@ -474,6 +474,7 @@
 
         <section class="panel" data-section="indent-generate">
           <h3>Generate Indent</h3>
+          <p class="muted">Approval flow: <strong>COCW → COAO → CAO → ROCW → GM → MD</strong>.</p>
           <form class="form" id="indent-form">
             <div class="form-grid">
               <div>
@@ -495,7 +496,7 @@
             </div>
             <div class="form-actions">
               <button type="submit" class="primary">Generate Indent</button>
-              <button type="button" class="ghost">Send to CO-AO</button>
+              <button type="button" class="ghost" id="send-indent-btn">Send to CO-AO</button>
             </div>
           </form>
           <div class="table-actions">
@@ -513,13 +514,13 @@
                 <th>Send</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="indent-generate-body">
               <tr>
                 <td>IND-9001</td>
                 <td>12 Aug 2024</td>
                 <td>Zone A</td>
                 <td>Division East</td>
-                <td><span class="status info">Draft</span></td>
+                <td><span class="status info">At COCW</span></td>
                 <td><button class="primary small">Send</button></td>
               </tr>
             </tbody>
@@ -544,7 +545,7 @@
                 <th>Status</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody id="indent-view-body">
               <tr class="row-approved">
                 <td>1</td>
                 <td>IND-8801</td>
@@ -574,6 +575,37 @@
               </tr>
             </tbody>
           </table>
+
+          <div class="panel-card" style="margin-top: 14px;">
+            <h4>Approve / Reject (Demo)</h4>
+            <div class="form-grid">
+              <div>
+                <label>Indent No</label>
+                <input id="indent-action-no" type="text" placeholder="IND-9001" />
+              </div>
+              <div>
+                <label>Current Role</label>
+                <select id="indent-action-role">
+                  <option>COCW</option>
+                  <option>COAO</option>
+                  <option>CAO</option>
+                  <option>ROCW</option>
+                  <option>GM</option>
+                  <option>MD</option>
+                </select>
+              </div>
+              <div>
+                <label>Action</label>
+                <select id="indent-action-type">
+                  <option value="approve">Approve</option>
+                  <option value="reject">Reject</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-actions" style="margin-top: 10px;">
+              <button class="primary" id="indent-action-btn" type="button">Apply Action</button>
+            </div>
+          </div>
         </section>
 
         <section class="panel" data-section="masters">
