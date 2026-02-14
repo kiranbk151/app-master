@@ -98,6 +98,12 @@ const toast = document.getElementById("toast");
 
 const workcodeNo = document.getElementById("workcode-no");
 const cbrNo = document.getElementById("cbr-no");
+const raBillAmount = document.getElementById("ra-bill-amount");
+const raLakhs = document.getElementById("ra-lakhs");
+const raWords = document.getElementById("ra-words");
+const totalStat = document.getElementById("total-stat");
+const totalNigam = document.getElementById("total-nigam");
+const chequeAmount = document.getElementById("cheque-amount");
 
 const showToast = (message) => {
   toast.textContent = message;
@@ -166,6 +172,47 @@ const generateCbrNo = () => {
   cbrNo.value = `CBR-${String(now.getFullYear()).slice(2)}${String(now.getMonth() + 1).padStart(2, "0")}-01`;
 };
 
+const numberToWords = (num) => {
+  if (!Number.isFinite(num) || num <= 0) return "Zero rupees only";
+  const ones = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+  const tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+  const twoDigits = (n) => (n < 20 ? ones[n] : `${tens[Math.floor(n / 10)]}${n % 10 ? ` ${ones[n % 10]}` : ""}`);
+  const threeDigits = (n) => {
+    const h = Math.floor(n / 100);
+    const r = n % 100;
+    return `${h ? `${ones[h]} Hundred ` : ""}${r ? twoDigits(r) : ""}`.trim();
+  };
+  let n = Math.floor(num);
+  const crore = Math.floor(n / 10000000);
+  n %= 10000000;
+  const lakh = Math.floor(n / 100000);
+  n %= 100000;
+  const thousand = Math.floor(n / 1000);
+  n %= 1000;
+  const parts = [];
+  if (crore) parts.push(`${threeDigits(crore)} Crore`);
+  if (lakh) parts.push(`${threeDigits(lakh)} Lakh`);
+  if (thousand) parts.push(`${threeDigits(thousand)} Thousand`);
+  if (n) parts.push(threeDigits(n));
+  return `${parts.join(" ")} rupees only`;
+};
+
+const sumInputs = (selector) => Array.from(document.querySelectorAll(selector)).reduce((acc, input) => acc + (parseFloat(input.value) || 0), 0);
+
+const updateCbrCalculations = () => {
+  if (!raBillAmount) return;
+  const ra = parseFloat(raBillAmount.value) || 0;
+  const stat = sumInputs(".stat-input");
+  const nigam = sumInputs(".nigam-input");
+  const cheque = ra - (stat + nigam);
+
+  if (totalStat) totalStat.value = stat.toFixed(2);
+  if (totalNigam) totalNigam.value = nigam.toFixed(2);
+  if (chequeAmount) chequeAmount.value = cheque.toFixed(2);
+  if (raLakhs) raLakhs.value = (ra / 100000).toFixed(2);
+  if (raWords) raWords.textContent = `Amount in words: ${numberToWords(ra)}`;
+};
+
 roleSelect.addEventListener("change", (event) => {
   renderMenu(event.target.value);
   setActiveSection("home", "Home Dashboard");
@@ -185,6 +232,13 @@ cbrForm.addEventListener("submit", (event) => {
   generateCbrNo();
 });
 
+if (raBillAmount) {
+  raBillAmount.addEventListener("input", updateCbrCalculations);
+  document.querySelectorAll(".stat-input, .nigam-input").forEach((input) => {
+    input.addEventListener("input", updateCbrCalculations);
+  });
+}
+
 const indentForm = document.getElementById("indent-form");
 indentForm.addEventListener("submit", (event) => {
   event.preventDefault();
@@ -195,3 +249,4 @@ renderMenu(roleSelect.value);
 setActiveSection("home", "Home Dashboard");
 generateWorkcode();
 generateCbrNo();
+updateCbrCalculations();

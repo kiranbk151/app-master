@@ -115,7 +115,23 @@
         </section>
 
         <section class="panel" data-section="workcode-new">
-          <h3>New Workcode</h3>
+          <div class="section-header">
+            <div>
+              <h3>New Workcode</h3>
+              <p class="muted">Capture project and agreement details before creating CBR entries.</p>
+            </div>
+            <div class="chip-row">
+              <span class="chip">Auto Workcode</span>
+              <span class="chip">Audit Trail Enabled</span>
+              <span class="chip">Master-driven dropdowns</span>
+            </div>
+          </div>
+          <div class="progress-strip">
+            <div class="step active"><span>1</span> Workcode</div>
+            <div class="step"><span>2</span> CBR</div>
+            <div class="step"><span>3</span> Indent</div>
+            <div class="step"><span>4</span> Approvals</div>
+          </div>
           <form class="form" id="workcode-form">
             <div class="form-grid">
               <div>
@@ -270,7 +286,17 @@
         </section>
 
         <section class="panel" data-section="cbr-new">
-          <h3>New CBR Entry</h3>
+          <div class="section-header">
+            <div>
+              <h3>New CBR Entry</h3>
+              <p class="muted">Section A captures bill metadata and Section B computes recoveries automatically.</p>
+            </div>
+            <div class="chip-row">
+              <span class="chip">Workcode-linked</span>
+              <span class="chip">Auto CBR number</span>
+              <span class="chip">Cheque formula enabled</span>
+            </div>
+          </div>
           <div class="search-card">
             <label>Search Workcode</label>
             <input type="text" placeholder="Start typing workcode..." />
@@ -338,12 +364,28 @@
               </div>
               <div>
                 <label>RA Bill Amount</label>
-                <input type="number" placeholder="0.00" />
-                <small class="muted">Amount in words: Ten lakh only</small>
+                <input type="number" id="ra-bill-amount" placeholder="0.00" step="0.01" />
+                <small class="muted" id="ra-words">Amount in words: Zero rupees only</small>
               </div>
               <div>
                 <label>RA Bill Amount (in Lakhs)</label>
-                <input type="text" value="10.00" readonly />
+                <input type="text" id="ra-lakhs" value="0.00" readonly />
+              </div>
+            </div>
+
+            <div class="calc-grid">
+              <div class="formula-card">
+                <h4>Section A Quick Check</h4>
+                <p class="muted">Verify bill value before applying statutory and nigam recoveries.</p>
+                <p class="formula">Cheque = RA Bill − (Total Statutory + Total Nigam)</p>
+              </div>
+              <div class="formula-card">
+                <h4>Validation Guide</h4>
+                <ul class="list compact">
+                  <li><span>CBR No</span><strong>Incremental + unique</strong></li>
+                  <li><span>RA Bill Amount</span><strong>2 decimal precision</strong></li>
+                  <li><span>Totals</span><strong>Auto computed</strong></li>
+                </ul>
               </div>
             </div>
 
@@ -351,45 +393,45 @@
               <div>
                 <h4>Statutory Deductions</h4>
                 <div class="form-grid compact">
-                  <div><label>Income Tax</label><input type="number" /></div>
-                  <div><label>VAT</label><input type="number" /></div>
-                  <div><label>CGST</label><input type="number" /></div>
-                  <div><label>SGST</label><input type="number" /></div>
-                  <div><label>IGST</label><input type="number" /></div>
-                  <div><label>CGST on fine/Scrap</label><input type="number" /></div>
-                  <div><label>SGST on fine/Scrap</label><input type="number" /></div>
-                  <div><label>Royalty</label><input type="number" /></div>
-                  <div><label>CBF</label><input type="number" /></div>
-                  <div><label>Rubble</label><input type="number" /></div>
-                  <div><label>CGST on Rubble</label><input type="number" /></div>
-                  <div><label>SGST on Rubble</label><input type="number" /></div>
-                  <div><label>Cess</label><input type="number" /></div>
-                  <div class="span-2"><label>Total Statutory Deductions</label><input type="number" readonly /></div>
+                  <div><label>Income Tax</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>VAT</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>CGST</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>SGST</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>IGST</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>CGST on fine/Scrap</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>SGST on fine/Scrap</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>Royalty</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>CBF</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>Rubble</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>CGST on Rubble</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>SGST on Rubble</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div><label>Cess</label><input type="number" class="stat-input" step="0.01" /></div>
+                  <div class="span-2"><label>Total Statutory Deductions</label><input type="number" id="total-stat" readonly /></div>
                 </div>
               </div>
               <div>
                 <h4>Nigam Adjustments</h4>
                 <div class="form-grid compact">
-                  <div><label>IBS</label><input type="number" /></div>
-                  <div><label>FSD</label><input type="number" /></div>
-                  <div><label>APS</label><input type="number" /></div>
-                  <div><label>Penalty</label><input type="number" /></div>
-                  <div><label>Misc Deposit</label><input type="number" /></div>
-                  <div><label>Additional EMD</label><input type="number" /></div>
-                  <div><label>Mob.Adv Adjustments</label><input type="number" /></div>
-                  <div><label>Int on Mob.Adv Adj.</label><input type="number" /></div>
-                  <div><label>Stamp Duty</label><input type="number" /></div>
-                  <div><label>Other Nigam Charges</label><input type="number" /></div>
-                  <div><label>MPWA Adjustments</label><input type="number" /></div>
-                  <div class="span-2"><label>Total Nigam Adjustments</label><input type="number" readonly /></div>
+                  <div><label>IBS</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>FSD</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>APS</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Penalty</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Misc Deposit</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Additional EMD</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Mob.Adv Adjustments</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Int on Mob.Adv Adj.</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Stamp Duty</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>Other Nigam Charges</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div><label>MPWA Adjustments</label><input type="number" class="nigam-input" step="0.01" /></div>
+                  <div class="span-2"><label>Total Nigam Adjustments</label><input type="number" id="total-nigam" readonly /></div>
                 </div>
               </div>
             </div>
 
-            <div class="form-grid">
+            <div class="form-grid totals-highlight">
               <div>
                 <label>CHEQUE Amount</label>
-                <input type="number" readonly placeholder="Auto-calculated" />
+                <input type="number" id="cheque-amount" readonly placeholder="Auto-calculated" />
               </div>
             </div>
             <div class="form-actions">
